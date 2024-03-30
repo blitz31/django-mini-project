@@ -9,30 +9,36 @@ def index(request):
         if form.is_valid():
             city = form.cleaned_data['city']
             country_code = form.cleaned_data['country_code']
-            
-            # Construct the API URL
-            api_url = f"https://api.openaq.org/v2/latest?country={country_code}&city={city}"
-            
-            # Fetch data from the API
+
+            api_url = f'https://api.openaq.org/v1/latest?country={country_code}'
             try:
                 response = requests.get(api_url)
                 if response.status_code == 200:
                     data = response.json()
-                    measurements = data['results']
-                    pm25_value = get_parameter_value(measurements, 'pm25')
-                    aqi_class = get_aqi_class(pm25_value)
-                    aqi_description = get_aqi_description(pm25_value)
-                    return render(request, 'home.html', {'city': city, 'pm25_value': pm25_value, 'aqi_class': aqi_class, 'aqi_description': aqi_description})
+                    print(data)
+                    measurements = get_measurements_by_city(data, city)
+                    if measurements:
+                        pm25_value = get_parameter_value(measurements, 'pm25')
+                        aqi_class = get_aqi_class(pm25_value)
+                        aqi_description = get_aqi_description(pm25_value)
+                        return render(request, 'home.html', {'city': city, 'pm25_value': pm25_value, 'aqi_class': aqi_class, 'aqi_description': aqi_description})
+                    else:
+                        error_message = f"No air quality data available for {city}. Please try another city."
                 else:
-                    error_message = f"Failed to fetch air quality data for {city}. Please try again later."
+                    error_message = f"Failed to fetch air quality data for {country_code}. Please try again later."
             except requests.RequestException as e:
                 error_message = f"Error occurred while fetching data: {str(e)}"
                 
             return render(request, 'base.html', {'form': form, 'error_message': error_message})
     else:
         form = CityForm()
+        return render(request, 'base.html', {'form': form})
     
-    return render(request, 'base.html', {'form': form})
+def get_measurements_by_city(data, city):
+    for result in data.get('results', []):
+        if result.get('location') == city:
+            return result.get('measurements', [])
+    return []
 
 def get_parameter_value(measurements, parameter):
     try:
