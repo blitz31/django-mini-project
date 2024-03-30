@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Pollution Index</title>
+    <style>
+        body {
+            background-color: #313131;
+            color: #fff;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #444;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+        }
+        .form {
+            max-width: 200px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #444;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+            display: flex;
+            justify-content: center;
+        }
+
+        
+
+        h2 {
+            text-align: center;
+        }
+
+        form {
+            margin-top: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            box-sizing: border-box;
+            margin-bottom: 20px;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Get Air Quality</h2>
+        <form method="post">
+            {% csrf_token %}
+            <label for="city">City:</label>
+            {{ form.city }}
+            <label for="country_code">Country Code:</label>
+            {{ form.country_code }}
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+    <h1 style="text-align: center;">If the data is not available at moment try</h1>
+    <div class="form">
+        <form id="aqiForm">
+            <div class="form-group">
+                <label for="pm10">Enter the PM10 value</label>
+                <input type="number" class="form-control" id="pm10" placeholder="PM10" />
+            </div>
+            <div class="form-group">
+                <label for="pm2.5">Enter the PM2.5 value</label>
+                <input type="number" class="form-control" id="pm2.5" placeholder="PM2.5" />
+            </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
+
+    <div id="output" style="display: flex; justify-content: center;"></div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+    <script>
+        function calculateAQI(pmValue, pollutant) {
+          let aqi;
+        if (pollutant === 'pm25') {
+            let c = pmValue;
+            if (c >= 0 && c <= 12.0) {
+                aqi = ((50 - 0) / (12.0 - 0)) * (c - 0) + 0;
+            } else if (c >= 12.1 && c <= 35.4) {
+                aqi = ((100 - 51) / (35.4 - 12.1)) * (c - 12.1) + 51;
+            } else if (c >= 35.5 && c <= 55.4) {
+                aqi = ((150 - 101) / (55.4 - 35.5)) * (c - 35.5) + 101;
+            } else if (c >= 55.5 && c <= 150.4) {
+                aqi = ((200 - 151) / (150.4 - 55.5)) * (c - 55.5) + 151;
+            } else if (c >= 150.5 && c <= 250.4) {
+                aqi = ((300 - 201) / (250.4 - 150.5)) * (c - 150.5) + 201;
+            } else if (c >= 250.5 && c <= 350.4) {
+                aqi = ((400 - 301) / (350.4 - 250.5)) * (c - 250.5) + 301;
+            } else if (c >= 350.5 && c <= 500.4) {
+                aqi = ((500 - 401) / (500.4 - 350.5)) * (c - 350.5) + 401;
+            } else {
+                aqi = null;
+            }
+        } else if (pollutant === 'pm10') {
+            let c = pmValue;
+            if (c >= 0 && c <= 54) {
+                aqi = ((50 - 0) / (54 - 0)) * (c - 0) + 0;
+            } else if (c >= 55 && c <= 154) {
+                aqi = ((100 - 51) / (154 - 55)) * (c - 55) + 51;
+            } else if (c >= 155 && c <= 254) {
+                aqi = ((150 - 101) / (254 - 155)) * (c - 155) + 101;
+            } else if (c >= 255 && c <= 354) {
+                aqi = ((200 - 151) / (354 - 255)) * (c - 255) + 151;
+            } else if (c >= 355 && c <= 424) {
+                aqi = ((300 - 201) / (424 - 355)) * (c - 355) + 201;
+            } else if (c >= 425 && c <= 504) {
+                aqi = ((400 - 301) / (504 - 425)) * (c - 425) + 301;
+            } else if (c >= 505 && c <= 604) {
+                aqi = ((500 - 401) / (604 - 505)) * (c - 505) + 401;
+            } else {
+                aqi = null;
+            }
+        } else {
+            throw new Error("Invalid pollutant. Use 'pm25' or 'pm10'.");
+        }
+
+        return Math.round(aqi);
+        }
+
+        function interpretAQI(aqi) {
+          let quality;
+        if (aqi >= 0 && aqi <= 50) {
+            quality = 'Good';
+        } else if (aqi <= 100) {
+            quality = 'Moderate';
+        } else if (aqi <= 150) {
+            quality = 'Unhealthy for Sensitive Groups';
+        } else if (aqi <= 200) {
+            quality = 'Unhealthy';
+        } else if (aqi <= 300) {
+            quality = 'Very Unhealthy';
+        } else {
+            quality = 'Hazardous';
+        }
+        return quality;
+        }
+
+        // Add event listener to the form
+        document.getElementById("aqiForm").addEventListener("submit", function(event) {
+            event.preventDefault(); // Prevent form submission
+            
+            // Get PM10 and PM2.5 values
+            let pm10Value = parseFloat(document.getElementById("pm10").value);
+            let pm25Value = parseFloat(document.getElementById("pm2.5").value);
+            
+            // Calculate AQI
+            let aqiPM10 = calculateAQI(pm10Value, 'pm10');
+            let aqiPM25 = calculateAQI(pm25Value, 'pm25');
+
+            // Interpret AQI
+            let qualityPM10 = interpretAQI(aqiPM10);
+            let qualityPM25 = interpretAQI(aqiPM25);
+
+            // Display AQI in the output div
+            document.getElementById("output").innerHTML = `AQI for PM10: ${aqiPM10}, Quality: ${qualityPM10} | AQI for PM2.5: ${aqiPM25}, Quality: ${qualityPM25}`;
+        });
+    </script>
+</body>
+</html>

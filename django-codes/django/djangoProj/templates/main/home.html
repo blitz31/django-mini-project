@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Air Quality Data for {{ city }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+
+        .container {
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        p {
+            margin: 10px 0;
+            font-size: 18px;
+        }
+
+        .aqi-class {
+            font-weight: bold;
+        }
+
+        .good { color: green; }
+        .moderate { color: #FFD700; }
+        .unhealthy { color: orange; }
+        .very-unhealthy { color: red; }
+        .hazardous { color: purple; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Air Quality Data for {{ city }}</h1>
+        {% if pm25_value is not None %}
+        <p>PM2.5: {{ pm25_value }}</p>
+        <p>AQI Class: <span class="aqi-class {{ aqi_class }}">{{ aqi_description }}</span></p>
+        {% else %}
+        <p>No air quality data available for {{ city }} right now</p>
+        {% endif %}
+    </div>
+</body>
+</html>

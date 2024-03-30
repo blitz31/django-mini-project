@@ -1,0 +1,25 @@
+
+    .form {
+      margin: 30px;
+      padding: 10px;
+      display: flex;
+      justify-content: center;
+      width: 0.5vp;
+    }
+    .form-group{
+      width: 250px;
+    }
+    .info{
+
+        display: flex;
+        justify-content: center;
+        color: bisque;
+        background: #150a35;
+    }
+    head{
+        display: flex;
+        justify-content: center;
+      color: rgb(41, 11, 61);   
+    }
+    
+    
