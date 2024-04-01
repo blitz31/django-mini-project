@@ -15,7 +15,6 @@ def index(request):
                 response = requests.get(api_url)
                 if response.status_code == 200:
                     data = response.json()
-                    print(data)
                     measurements = get_measurements_by_city(data, city)
                     if measurements:
                         pm25_value = get_parameter_value(measurements, 'pm25')
