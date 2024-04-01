@@ -83,6 +83,15 @@
             <button type="submit">Submit</button>
         </form>
     </div>
+
+    <!-- <button onclick="showErrorPopup('Test error message')">Test Error Popup</button>
+     -->
+     {% if error_message %}
+    <script>
+        alert("{{ error_message }}");
+    </script>
+{% endif %}
+
     <h1 style="text-align: center;">If the data is not available at moment try</h1>
     <div class="form">
         <form id="aqiForm">
@@ -96,6 +105,11 @@
             </div>
             <button type="submit" class="btn btn-primary">Submit</button>
         </form>
+    </div>
+
+    <div id="error-popup" style="display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: rgba(255, 0, 0, 0.8); color: #fff; padding: 20px; border-radius: 10px; z-index: 100;">
+        Error: <span id="error-message">
+        </span>
     </div>
 
     <div id="output" style="display: flex; justify-content: center;"></div>
@@ -171,6 +185,10 @@
         return quality;
         }
 
+        function showErrorPopup(message) {
+            alert("Error: " + message);
+        }
+
         // Add event listener to the form
         document.getElementById("aqiForm").addEventListener("submit", function(event) {
             event.preventDefault(); // Prevent form submission
@@ -191,5 +209,6 @@
             document.getElementById("output").innerHTML = `AQI for PM10: ${aqiPM10}, Quality: ${qualityPM10} | AQI for PM2.5: ${aqiPM25}, Quality: ${qualityPM25}`;
         });
     </script>
+    
 </body>
 </html>

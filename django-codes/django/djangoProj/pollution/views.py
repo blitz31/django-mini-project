@@ -25,8 +25,10 @@ def index(request):
                         error_message = f"No air quality data available for {city}. Please try another city."
                 else:
                     error_message = f"Failed to fetch air quality data for {country_code}. Please try again later."
+                    return render(request, 'base.html', {'form': form, 'error_message': error_message})
             except requests.RequestException as e:
                 error_message = f"Error occurred while fetching data: {str(e)}"
+                return render(request, 'base.html', {'form': form, 'error_message': error_message})
                 
             return render(request, 'base.html', {'form': form, 'error_message': error_message})
     else:
