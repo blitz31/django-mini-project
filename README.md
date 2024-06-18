@@ -1,3 +1,3 @@
 # django-mini-project
-SAKEC bois djangoo mp🥶🗿😎
+djangoo mp🥶🗿😎
 ![](django-logo.png)
